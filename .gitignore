@@ -1,1 +1,6 @@
+# Project Settings
 mysite/mysite/settings.py
+# environment
+venv
+# database
+mysite/db.sqlite3
