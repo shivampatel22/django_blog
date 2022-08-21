@@ -4,3 +4,5 @@ mysite/mysite/settings.py
 venv
 # database
 mysite/db.sqlite3
+# vsc
+project-blog.code-workspace

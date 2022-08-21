@@ -1,4 +1,3 @@
-from hashlib import new
 from django.shortcuts import render, get_object_or_404
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .models import Post, Comment
@@ -7,6 +6,8 @@ from .forms import EmailPostForm, CommentForm
 from django.http import HttpRequest
 from django.core.mail import send_mail
 from django.db.models import Count
+from django.conf import settings
+import smtplib
 
 def post_list(request, tag_slug=None):
     object_list = Post.published_objects.all()
@@ -50,16 +51,28 @@ def post_detail(request, day, month, year, post):
 def post_share(request, post_id):
     post = get_object_or_404(Post, id=post_id, status='published')
     sent = False
+    error = None
 
+    # if form is submitted
     if request.method == 'POST':
+        # bound the form with data
         form = EmailPostForm(request.POST)
         if form.is_valid():
             cd = form.cleaned_data
+            # build complete uri(along with domain) from absolute url
             post_url = request.build_absolute_uri(post.get_absolute_url())
             subject = "{} ({}) recommends you reading {}".format(cd['name'], cd['email'], post.title)
             message = 'Read "{}" at {}\n\n{}\'s comments: {}'.format(post.title, post_url, cd['name'], cd['comments'])
-            send_mail(subject, message, 'warmachine221997@gmail.com', [cd['to']])
-            sent = True
+            # try to send email
+            try:
+                send_mail(subject, message, settings.EMAIL_HOST_USER, [cd['to']], fail_silently=False)
+            except smtplib.SMTPException as e:
+                error = e
+            else:   
+                sent = True
     else:
         form = EmailPostForm()
-    return render(request, 'blog/post/share.html', {'post':post, 'form':form, 'sent':sent})
+    return render(request, 'blog/post/share.html', {'post':post, 
+                                                    'form':form, 
+                                                    'sent':sent,
+                                                    'error':error})

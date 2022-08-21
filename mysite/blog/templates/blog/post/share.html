@@ -6,6 +6,9 @@
     {% if sent %}
         <h1>E-mail successfully sent</h1>
         <p>"{{ post.title }}" was successfully sent to {{ form.cleaned_data.to }}.</p>
+    {% elif error %}
+        <h1>E-mail failed</h1>
+        <p>{{ error }}</p>
     {% else %}
         <form action="." method="post">
             {{ form.as_p }}
