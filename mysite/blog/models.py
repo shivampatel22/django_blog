@@ -43,12 +43,14 @@ class Post(models.Model):
         return self.title
 
 class Comment(models.Model):
+    # Many to one
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments')
     name = models.CharField(max_length=80)
     email = models.EmailField()
     body = models.TextField()
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
+    # remove inappropriate comments
     active = models.BooleanField(default=True)
 
     class Meta:
