@@ -1,0 +1,6 @@
+<h2>Filter Posts</h2>
+<form action="." method="post">
+    {{ form.as_p }}
+    {% csrf_token %}
+    <input type="submit" value="Apply">
+</form>    

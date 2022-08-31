@@ -4,6 +4,7 @@ from django.utils import timezone
 from django.contrib.auth.models import User
 from django.urls import reverse
 from taggit.managers import TaggableManager
+from decimal import Decimal
 
 class PublishedManager(models.Manager):
     def get_queryset(self):
@@ -22,6 +23,8 @@ class Post(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='draft')
+    rating = models.DecimalField(max_digits=2, decimal_places=1, default=Decimal('0.0'))
+    duration = models.DecimalField(max_digits=2, decimal_places=1, default=Decimal('0.0'))
 
     def get_absolute_url(self):
         return reverse('blog:post_detail',

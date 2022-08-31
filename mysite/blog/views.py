@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .models import Post, Comment
 from taggit.models import Tag
-from .forms import EmailPostForm, CommentForm, SearchForm
+from .forms import EmailPostForm, CommentForm, SearchForm, FilterForm, get_duration_choices
 from django.http import HttpRequest
 from django.core.mail import send_mail
 from django.db.models import Count
@@ -11,13 +11,47 @@ import smtplib
 from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
 
 def post_list(request, tag_slug=None):
+    # get all published objects
     object_list = Post.published_objects.all()
     tag = None
+    filter_form = None
     if tag_slug:
         # get the tag object
         tag = get_object_or_404(Tag, slug=tag_slug)
         # get all posts with given tag
         object_list = object_list.filter(tags__in=[tag])
+ 
+    # method is post if filters are applied
+    elif (request.method == 'POST'):
+        filter_form = FilterForm(request.POST)
+        if filter_form.is_valid():
+            # get applied filters
+            tags_filter = filter_form.cleaned_data.get('tags_filter')
+            rating_filter = filter_form.cleaned_data.get('rating_filter')
+            duration_filter = filter_form.cleaned_data.get('duration_filter')
+            title_filter = filter_form.cleaned_data.get('title_filter', None)
+
+            # get duration options
+            duration_choices = dict(get_duration_choices())
+            duration_choice = duration_choices.get(str(duration_filter))
+
+            # prepare queryset
+            object_list = object_list.filter(tags__in=tags_filter).filter(rating__gte=rating_filter).distinct()
+            if duration_choice == 'All':
+                object_list = object_list.filter(duration__gt=0.0)
+            elif duration_choice == 'short':
+                object_list = object_list.filter(duration__lte=1.5)
+            elif duration_choice == 'medium':
+                object_list = object_list.filter(duration__gt=1.5).filter(duration__lt=3.0)
+            else:
+                object_list = object_list.filter(duration__gt=3.0)
+            if title_filter:
+                object_list = object_list.filter(title__icontains=title_filter)
+
+    else:
+        # instantiate empty filter form
+        filter_form = FilterForm()
+
     # 3 posts per page
     paginator = Paginator(object_list, 3)
     page = request.GET.get('page')
@@ -27,7 +61,8 @@ def post_list(request, tag_slug=None):
         posts = paginator.page(1)
     except EmptyPage:
         posts = paginator.page(paginator.num_pages)
-    return render(request, 'blog/post/list.html', {'page':page, 'posts': posts, 'tag':tag})
+
+    return render(request, 'blog/post/list.html', {'page':page, 'posts': posts, 'tag':tag, 'filter_form':filter_form})
 
 def post_detail(request, day, month, year, post):
     post = get_object_or_404(Post, slug=post,
