@@ -25,8 +25,11 @@
             {% endfor %}
             </ul>
             <p><a href="{% url 'blog:post_feed'%}">Subscribe to my RSS feed</a></p>
+            <p>Do a <a href="{% url 'blog:post_search' %}">Full Text Search</a>.</p>
             {% if filter_form %}
                 {% include "blog/filter_pannel.html" with form=filter_form %}
+            {% else %}
+                {% get_nav_buttons %}
             {% endif %}
         </div>
     </body>

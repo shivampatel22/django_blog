@@ -3,6 +3,7 @@ from ..models import Post
 from django.db.models import Count
 from django.utils.safestring import mark_safe
 import markdown
+from django.urls import reverse
 
 register = template.Library()
 
@@ -24,3 +25,10 @@ def get_most_commented_posts(count=5):
 @register.filter(name='markdown')
 def markdown_format(text):
     return mark_safe(markdown.markdown(text))
+
+@register.inclusion_tag('blog/post/nav_buttons.html')
+def get_nav_buttons():
+    return {
+        'home_link': reverse('blog:post_list'),
+        'home_title': 'Home'
+    }
