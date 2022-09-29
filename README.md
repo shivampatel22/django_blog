@@ -79,6 +79,6 @@ Credits
 
 - Django 4 by example - [github](https://github.com/PacktPublishing/Django-4-by-example)
 - [django-taggit](https://github.com/jazzband/django-taggit)
-- [Markdown](https://github.com/Python-Markdown/markdown)
-- [Django](https://github.com/django)
+- [python-markdown](https://github.com/Python-Markdown/markdown)
+- [Django project](https://github.com/django)
 - [Heroku cloud application platform](https://www.heroku.com/home)
