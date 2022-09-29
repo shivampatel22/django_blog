@@ -1,7 +1,7 @@
 Django Blog | A Blog Application 
 ================================
 
-> django_blog is a blog application where users can read, share and comment on blog posts. In addition to features offfered by a basic blog application this application implements several bakend features which make this application highly reliable and scalabe. As a part of implementation of this projects following features/outcomes/learnings have been targeted -       
+> django_blog is a blog application where users can read, share and comment on blog posts. In addition to features offfered by a basic blog application this application implements several bakend features which make this application highly reliable and scalabe. As a part of implementation of this projects following features/outcomes/learnings have been targeted -     
 
 - Build data models, views, and URLs
 - Implement an administration site for blog
@@ -27,6 +27,8 @@ A **filter bar** (based on the attributes of a post) has been integrated with th
 Here is how the home page looks like - 
 
 ![homepage](assets/home.png)
+
+Home - https://djblogsite.herokuapp.com/blog/
 
 Tagging system
 --------------
@@ -63,14 +65,14 @@ RSS feed
 
 To allow users to stay up-to-date with new content posted on the application, a RSS feed has been integrated into this application using django syndication framework. This allows users to get informed whenever a new post has been added to blog(without asking the user to subscribe to application).
 
-https://djblogsite.herokuapp.com/blog/feed/
+RSS feed - https://djblogsite.herokuapp.com/blog/feed/
 
 Site map
 --------
 
 A Sitemap has been included to allow web crawlers and search engines to priortise some important pages of the application over the other.
 
-https://djblogsite.herokuapp.com/sitemap.xml/
+Sitemap - https://djblogsite.herokuapp.com/sitemap.xml/
 
 Credits
 =======
